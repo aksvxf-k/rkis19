@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Онлайн заказ</title>
+	<link rel="stylesheet" href="style.css" type="text/css"/>
+</head>
+
+<body>
+	<script>
+		//исходный объект заказа
+		let order = {
+			user: {
+				name: "Баронесса",
+				surname: "Де Синяк",
+				email: "b-sinyaya@mail.ru",
+				phone: "8 (777) 666-52-67"
+			},
+			order_info: {
+				order_date: "01.01.1967",
+				delivery_type: "По адресу",
+				discount: "67%",
+				total_price: "",
+				address: {
+					city: "Москва",
+					street: "Бурмалдинская улица",
+					house: "87"
+				}
+			},
+			products: [
+				{
+					articul: "RTLACB138001",
+					name: "Супер пупер носки",
+					brand: "UNIQLO",
+					color: "Синий",
+					season: "Мульти",
+					price: 399,
+					quantity: 3,
+					cost: ""
+				},
+				{
+					articul: "MP002XM0984Y",
+					name: "Штанишки",
+					brand: "O'stin",
+					color: "Черный бумер",
+					season: "Демисезон",
+					price: 3799,
+					quantity: 1,
+					cost: ""
+				},
+				{
+					articul: "MP002XM0984Y",
+					name: "Дубленка CLAUDE",
+					brand: "Mango Man",
+					color: "Коричневый",
+					season: "Мульти",
+					price: 11190,
+					quantity: 1,
+					cost: ""
+				}
+			]
+		};
+
+		//JSON-представление заказа в консоль
+		console.log("JSON заказа");
+		console.log(JSON.stringify(order, null, 2));
+
+		//JSON -> JS-объект
+		let orderJSON = JSON.stringify(order);
+		let orderFromJSON = JSON.parse(orderJSON);
+		console.log("Объект после JSON.parse");
+		console.log(orderFromJSON);
+
+		//стоимость каждой позиции
+		order.products.forEach(function (product) {
+			product.cost = product.price * product.quantity;
+		});
+
+		//итоговая стоимость + итог со скидкой
+		let totalPrice = 0;
+		order.products.forEach(function (product) {
+			totalPrice += product.cost;
+		});
+		
+		//расчет скидки
+		let totalWithDiscount = (totalPrice * (1 - discount)).toFixed(2);
+
+		//расчётное значение в объект заказа
+		order.order_info.total_price = totalWithDiscount;
+
+		//финальный JS-объект заказа в консоль
+		console.log("Финальный объект заказа");
+		console.log(order);
+
+		//формирование HTML и вывод в браузер
+		let html = `
+		<div class="wrapper">
+			<div class="user_order_header">
+				<h2>Заказ пользователя: ${order.user.name} ${order.user.surname}</h2>
+			</div>
+
+			<div class="user_data">
+				<div class="user_personal_data">
+					<div class="order_item">
+						<div>Номер телефона</div>
+						<div>${order.user.phone}</div>
+					</div>
+					<div class="order_item">
+						<div>E-mail</div>
+						<div>${order.user.email}</div>
+					</div>
+				</div>
+				<div class="user_order_data">
+					<div class="order_item">
+						<div>Дата заказа</div>
+						<div>${order.order_info.order_date}</div>
+					</div>
+					<div class="order_item">
+						<div>Тип доставки</div>
+						<div>${order.order_info.delivery_type}
+						(${order.order_info.address.city},
+						${order.order_info.address.street},
+						${order.order_info.address.house})</div>
+					</div>
+					<div class="order_item">
+						<div>Скидка</div>
+						<div>${order.order_info.discount}</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="products">
+				${order.products.map(function (p) {
+					return `
+					<div class="product_card">
+						<div class="product_card_info">
+							<div>Артикул: ${p.articul}</div>
+							<div>Название: ${p.name}</div>
+							<div>Бренд: ${p.brand}</div>
+							<div>Цвет: ${p.color}</div>
+							<div>Сезон: ${p.season}</div>
+							<div>Цена: ${p.price} ₽</div>
+						</div>
+						<div class="product_card_quantity">
+							<div class="quantity_adjust">−</div>
+							<div>${p.quantity}</div>
+							<div class="quantity_adjust">+</div>
+						</div>
+						<div class="product_card_cost">${p.cost} ₽</div>
+					</div>`;
+				}).join("")}
+			</div>
+
+			<div class="order_item">
+				<div class="total_price">Итого:</div>
+				<div class="order_item_border">
+					<span class="total_price_number">${totalPrice} ₽</span>
+				</div>
+			</div>
+			<div class="order_item">
+				<div class="total_price">Итого (со скидкой):</div>
+				<div class="order_item_border">
+					<span class="total_price_number">${totalWithDiscount} ₽</span>
+				</div>
+			</div>
+		</div>`;
+
+		document.body.insertAdjacentHTML("afterbegin", html);
+	</script>
+
+	<footer align="center">
+		<h3>Да здраствует поколение сикс-севен!!!!</h3>
+		<a href="https://yandex.ru/maps/-/CXqrzW-a" target="__blank">67676767676767676767676767<a>
+	</footer>
+</body>
+
+</html>
